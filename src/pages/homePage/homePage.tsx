@@ -18,7 +18,7 @@ const homePage = () => {
 				if (_.get(res, 'data.code') === 0) {
 					const url = _.get(res, 'data.data.url');
 					if (!_.isEmpty(url)) {
-						window.open(url)
+						window.location.href = url
 					}
 				}
 				console.log("====", res)
