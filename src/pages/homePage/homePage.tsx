@@ -14,8 +14,13 @@ const homePage = () => {
 
 	useEffect(() => {
 		if (_.isEmpty(token)) {
-			Api.get('/wechat/index').then((res: any) => {
-				//
+			Api.get('/wechat/login').then((res: any) => {
+				if (_.get(res, 'data.code') === 0) {
+					const url = _.get(res, 'data.data.url');
+					if (!_.isEmpty(url)) {
+						window.open(url)
+					}
+				}
 				console.log("====", res)
 			}).catch((error: any) => {
 				console.log("=====no error", error)
@@ -23,7 +28,7 @@ const homePage = () => {
 			// window.open('http://api.wm.yuejuwenhua.com/wechat/index')
 		} else {
 			///wechat/index?token=035c94156320d656250e32aef241febf
-			Api.get(`/wechat/index?token=${token}`).then((res: any) => {
+			Api.get(`/wechat/login?token=${token}`).then((res: any) => {
 				console.log("res==", res)
 				if (_.get(res, 'data.code') === 0) {
 					const data = _.get(res, 'data.data.info')
