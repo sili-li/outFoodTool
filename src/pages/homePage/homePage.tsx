@@ -72,8 +72,6 @@ const homePage = () => {
 		return <Carousel
 			autoplay={true}
 			infinite
-			beforeChange={(from, to) => console.log(`slide from ${from} to ${to}`)}
-			afterChange={index => console.log('slide to', index)}
 		>
 			<a
 				key='meituan'
@@ -142,9 +140,9 @@ const homePage = () => {
 								<a href={_.get(userInfo, 'e_url')}>立即领取</a>
 							</div>
 						</div>
-						<a href={_.get(userInfo, 'e_url')} className={styles.meiBtn} type="primary">领红包点外卖</a>
-						<a href={_.get(userInfo, 'e_short_link')} className={styles.meiBtn}>分享链接赚钱</a>
-						<a href={_.get(userInfo, 'e_qrcode_url')} className={styles.meiBtn}>分享海报赚钱</a>
+						<a href={_.get(userInfo, 'e_url')} className={classnames(styles.meiBtn, styles.eleBtn)} type="primary">领红包点外卖</a>
+						<a href={_.get(userInfo, 'e_short_link')} className={classnames(styles.meiBtn, styles.eleBtn)}>分享链接赚钱</a>
+						<a href={_.get(userInfo, 'e_qrcode_url')} className={classnames(styles.meiBtn, styles.eleBtn)}>分享海报赚钱</a>
 					</div>
 				</TabBar.Item>
 				<TabBar.Item
