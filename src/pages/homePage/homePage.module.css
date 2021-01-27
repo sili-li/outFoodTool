@@ -20,8 +20,55 @@
         &::before{
             border:none!important;
         }
+    }    
+}
+.tabIcon{
+  width: 22px;
+  height: 22px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  &.eleIcon{
+    background-image: url(../../assets/icons/ele_grey.png);
+  }
+  &.eleSelected{
+    background-image: url(../../assets/icons/ele.png);
+  }
+  &.meituanIcon{
+    background-image: url(../../assets/icons/mt_grey.png);
+  }
+  &.meituanSelected{
+    background-image: url(../../assets/icons/mt.png);
+  }
+  &.mineIcon{
+    background-image: url(../../assets/icons/mine_grey.png);
+  }
+  &.mineSelected{
+    background-image: url(../../assets/icons/mine.png);
+  }
+}
+.contentBox{
+  margin: 8px;
+  background-color: #fff;
+  padding:10px;
+  & .getBox{
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+
+    & a{
+      display: inline-block;
+      height: 26px;
+      border-radius: 13px;
+      padding-left: 8px;
+      padding-right: 8px;
+      background-color: #f40;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    
+  }
 }
 .mineBg{
 background-color: #f40;

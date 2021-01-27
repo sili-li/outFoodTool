@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { TabBar } from 'antd-mobile';
-import meituanBg from '../../assets/images/meituanBg.png'
+import { TabBar, Carousel } from 'antd-mobile';
 import _ from 'lodash'
 import qs from 'qs'
+import classnames from 'classnames'
 import styles from './homePage.module.css'
 import Api from '../../lib/api';
+import meituanBanner from '../../assets/images/mt_bannerjpg.jpg'
+import elmBanner from '../../assets/images/elm_banner.png'
 
 const homePage = () => {
 	const [selectedTab, setSelectTab] = useState<string>('meituan');
@@ -66,60 +68,89 @@ const homePage = () => {
 		</div>
 	}
 
+	const renderBanner = () => {
+		return <Carousel
+			autoplay={true}
+			infinite
+			beforeChange={(from, to) => console.log(`slide from ${from} to ${to}`)}
+			afterChange={index => console.log('slide to', index)}
+		>
+			<a
+				key='meituan'
+				href="/"
+				style={{ display: 'inline-block', width: '100%', height: 'auto' }}
+			>
+				<img
+					src={meituanBanner}
+					alt=""
+					style={{ width: '100%', verticalAlign: 'top' }}
+				/>
+			</a>
+			<a
+				key='ele'
+				href="/"
+				style={{ display: 'inline-block', width: '100%', height: 'auto' }}
+			>
+				<img
+					src={elmBanner}
+					alt=""
+					style={{ width: '100%', verticalAlign: 'top' }}
+				/>
+			</a>
+		</Carousel>
+	}
+
+	const renderIcon = (styleName: any) => {
+		return <div className={classnames(styles.tabIcon, styleName)}></div>
+	}
+
+	const getSelectedColor = () => {
+		switch (selectedTab) {
+			case 'ele':
+				return '#33A3F4'
+			case 'meituan':
+				return '#FFC300'
+			default:
+				return '#f40'
+		}
+	}
 
 	return (
 		<div style={{ position: 'fixed', height: '100%', width: '100%', top: 0 }}>
 			<TabBar
 				unselectedTintColor="#949494"
-				tintColor="#33A3F4"
+				tintColor={getSelectedColor()}
 				barTintColor="white"
 			>
 				<TabBar.Item
 					title="饿了么"
 					key="ele"
-					icon={
-						<div style={{
-							width: '22px',
-							height: '22px',
-							background: 'url(https://gw.alipayobjects.com/zos/rmsportal/BTSsmHkPsQSPTktcXyTV.svg) center center /  21px 21px no-repeat'
-						}}
-						/>
-					}
-					selectedIcon={
-						<div style={{
-							width: '22px',
-							height: '22px',
-							background: 'url(https://gw.alipayobjects.com/zos/rmsportal/ekLecvKBnRazVLXbWOnE.svg) center center /  21px 21px no-repeat'
-						}}
-						/>
-					}
+					icon={renderIcon(styles.eleIcon)}
+					selectedIcon={renderIcon(styles.eleSelected)}
 					selected={selectedTab === 'ele'}
 					onPress={() => {
 						setSelectTab('ele')
 					}}
 					data-seed="logId"
 				>
-					<div>饿了吗</div>
+					<div className={styles.meiContent}>
+						{renderBanner()}
+						<div className={styles.contentBox}>
+							<img className={styles.meiBg} src={elmBanner} alt='' />
+							<div className={styles.getBox}>
+								<p>饿了么天天领券</p>
+								<a href={_.get(userInfo, 'e_url')}>立即领取</a>
+							</div>
+						</div>
+						<a href={_.get(userInfo, 'e_url')} className={styles.meiBtn} type="primary">领红包点外卖</a>
+						<a href={_.get(userInfo, 'e_short_link')} className={styles.meiBtn}>分享链接赚钱</a>
+						<a href={_.get(userInfo, 'e_qrcode_url')} className={styles.meiBtn}>分享海报赚钱</a>
+					</div>
 				</TabBar.Item>
 				<TabBar.Item
-
-					icon={
-						<div style={{
-							width: '22px',
-							height: '22px',
-							background: 'url(https://gw.alipayobjects.com/zos/rmsportal/BTSsmHkPsQSPTktcXyTV.svg) center center /  21px 21px no-repeat'
-						}}
-						/>
-					}
-					selectedIcon={
-						<div style={{
-							width: '22px',
-							height: '22px',
-							background: 'url(https://gw.alipayobjects.com/zos/rmsportal/ekLecvKBnRazVLXbWOnE.svg) center center /  21px 21px no-repeat'
-						}}
-						/>
-					}
-					title="美团"
+					icon={renderIcon(styles.meituanIcon)}
+					selectedIcon={renderIcon(styles.meituanSelected)}
+					title="美团领券"
 					key="meituan"
 					selected={selectedTab === 'meituan'}
 					onPress={() => {
@@ -128,29 +159,22 @@ const homePage = () => {
 					data-seed="logId1"
 				>
 					<div className={styles.meiContent}>
-						<img className={styles.meiBg} src={meituanBg} alt='' />
-						<a href={_.get(userInfo, 'url')} className={styles.meiBtn} type="primary">领红包点外卖</a>
-						<a href={_.get(userInfo, 'short_link')} className={styles.meiBtn}>分享链接赚钱</a>
-						<a href={_.get(userInfo, 'qrcode_url')} className={styles.meiBtn}>分享海报赚钱</a>
+						{renderBanner()}
+						<div className={styles.contentBox}>
+							<img className={styles.meiBg} src={meituanBanner} alt='' />
+							<div className={styles.getBox}>
+								<p>美团外卖天天领券</p>
+								<a href={_.get(userInfo, 'm_url')}>立即领取</a>
+							</div>
+						</div>
+						<a href={_.get(userInfo, 'm_url')} className={styles.meiBtn} type="primary">领红包点外卖</a>
+						<a href={_.get(userInfo, 'm_short_link')} className={styles.meiBtn}>分享链接赚钱</a>
+						<a href={_.get(userInfo, 'm_qrcode_url')} className={styles.meiBtn}>分享海报赚钱</a>
 					</div>
 				</TabBar.Item>
 				<TabBar.Item
-					icon={
-						<div style={{
-							width: '22px',
-							height: '22px',
-							background: 'url(https://zos.alipayobjects.com/rmsportal/psUFoAMjkCcjqtUCNPxB.svg) center center /  21px 21px no-repeat'
-						}}
-						/>
-					}
-					selectedIcon={
-						<div style={{
-							width: '22px',
-							height: '22px',
-							background: 'url(https://zos.alipayobjects.com/rmsportal/IIRLrXXrFAhXVdhMWgUI.svg) center center /  21px 21px no-repeat'
-						}}
-						/>
-					}
+					icon={renderIcon(styles.mineIcon)}
+					selectedIcon={renderIcon(styles.mineSelected)}
 					title="个人中心"
 					key="mine"
 					dot
@@ -163,7 +187,7 @@ const homePage = () => {
 				</TabBar.Item>
 
 			</TabBar>
-		</div>
+		</div >
 	);
 }
 
