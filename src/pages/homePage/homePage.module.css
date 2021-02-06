@@ -23,7 +23,13 @@
         &::before{
             border:none!important;
         }
-    }    
+    } 
+    & .qrCode{
+      width: 200px;
+      display: block;
+      margin: 10px auto;
+      
+    }   
 }
 .tabIcon{
   width: 22px;

@@ -5,21 +5,21 @@ const {
   overrideDevServer
 } = require("customize-cra");
 
-const _ENV = {
-  DEV: 'http://api.wm.yuejuwenhua.com',
-};
-const devServerConfig = () => config => {
-  return {
-    ...config,
-    proxy: {
-      '/api': {
-        target: _ENV.DEV,
-        changeOrigin: true,
-        secure: false
-      }
-    }
-  };
-};
+// const _ENV = {
+//   DEV: 'http://api.wm.yuejuwenhua.com',
+// };
+// const devServerConfig = () => config => {
+//   return {
+//     ...config,
+//     proxy: {
+//       '/api': {
+//         target: _ENV.DEV,
+//         changeOrigin: true,
+//         secure: false
+//       }
+//     }
+//   };
+// };
 // 关掉 sourceMap
 process.env.GENERATE_SOURCEMAP = process.env.NODE_ENV === 'development' ? 'true' : 'false';
 module.exports = {
@@ -47,5 +47,5 @@ module.exports = {
       style: 'css'
     })
   ),
-  devServer: overrideDevServer(devServerConfig())
+  // devServer: overrideDevServer(devServerConfig())
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { TabBar, Carousel } from 'antd-mobile';
+import { TabBar, Carousel, Toast, ActivityIndicator } from 'antd-mobile';
 import _ from 'lodash'
 import qs from 'qs'
 import classnames from 'classnames'
@@ -11,6 +11,9 @@ import elmBanner from '../../assets/images/elm_banner.png'
 const homePage = () => {
 	const [selectedTab, setSelectTab] = useState<string>('meituan');
 	const [userInfo, setUserInfo] = useState();
+	const [eleInfo, setEleInfo] = useState();
+	const [mtInfo, setMtInfo] = useState();
+	const [loading, setIsLoading] = useState(false);
 	const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
 	const token = _.get(queryParams, 'token');
 
@@ -23,20 +26,21 @@ const homePage = () => {
 						window.location.href = url
 					}
 				}
-				console.log("====", res)
 			}).catch((error: any) => {
+				Toast.fail('登录失败')
 				console.log("=====no error", error)
 			})
 			// window.open('http://api.wm.yuejuwenhua.com/wechat/index')
 		} else {
 			///wechat/index?token=035c94156320d656250e32aef241febf
 			Api.get(`/wechat/login?token=${token}`).then((res: any) => {
-				console.log("res==", res)
 				if (_.get(res, 'data.code') === 0) {
 					const data = _.get(res, 'data.data.info')
 					setUserInfo(data || {})
+					getActivityInfo(1);
 				}
 			}).catch((error: any) => {
+				Toast.fail('获取信息失败')
 				console.log("error===", error)
 			})
 		}
@@ -113,6 +117,28 @@ const homePage = () => {
 		}
 	}
 
+	const getActivityInfo = (type: number) => {
+		//1 美团
+		//2 饿了么
+		setIsLoading(true)
+		Api.post('/wechat/getActivityInfo', {
+			type, token: '8dae0bbb4f2819b5bf169bf6babce304'
+		}).then((res: any) => {
+			if (_.get(res, 'data.code') === 0) {
+				const data = _.get(res, 'data.data')
+				if (type == 1) {
+					setMtInfo(data)
+				} else {
+					setEleInfo(data)
+				}
+			}
+		}).catch(() => {
+			Toast.fail('获取活动失败')
+		}).finally(() => {
+			setIsLoading(false)
+		})
+	}
+
 	return (
 		<div style={{ position: 'fixed', height: '100%', width: '100%', top: 0 }}>
 			<TabBar
@@ -128,6 +154,7 @@ const homePage = () => {
 					selected={selectedTab === 'ele'}
 					onPress={() => {
 						setSelectTab('ele')
+						_.isEmpty(eleInfo) && getActivityInfo(2);
 					}}
 					data-seed="logId"
 				>
@@ -137,12 +164,15 @@ const homePage = () => {
 							<img className={styles.meiBg} src={elmBanner} alt='' />
 							<div className={styles.getBox}>
 								<p>饿了么天天领券</p>
-								<a href={_.get(userInfo, 'e_url')}>立即领取</a>
+								{!_.isEmpty(eleInfo) && <a href={_.get(eleInfo, 'click_url')}>立即领取</a>}
 							</div>
 						</div>
-						<a href={_.get(userInfo, 'e_url')} className={classnames(styles.meiBtn, styles.eleBtn)} type="primary">领红包点外卖</a>
-						<a href={_.get(userInfo, 'e_short_link')} className={classnames(styles.meiBtn, styles.eleBtn)}>分享链接赚钱</a>
-						<a href={_.get(userInfo, 'e_qrcode_url')} className={classnames(styles.meiBtn, styles.eleBtn)}>分享海报赚钱</a>
+						{!_.isEmpty(eleInfo) && <img className={styles.qrCode} src={_.get(eleInfo, 'wx_mini_qrcode_url')} />}
+						{/* {!_.isEmpty(eleInfo) && <>
+							<a href={_.get(eleInfo, 'click_url')} className={classnames(styles.meiBtn, styles.eleBtn)} type="primary">领红包点外卖</a>
+							<a href={_.get(eleInfo, 'e_short_link')} className={classnames(styles.meiBtn, styles.eleBtn)}>分享链接赚钱</a>
+							<a href={_.get(eleInfo, 'e_qrcode_url')} className={classnames(styles.meiBtn, styles.eleBtn)}>分享海报赚钱</a>
+						</>} */}
 					</div>
 				</TabBar.Item>
 				<TabBar.Item
@@ -152,7 +182,8 @@ const homePage = () => {
 					key="meituan"
 					selected={selectedTab === 'meituan'}
 					onPress={() => {
-						setSelectTab('meituan')
+						setSelectTab('meituan');
+						_.isEmpty(mtInfo) && getActivityInfo(1)
 					}}
 					data-seed="logId1"
 				>
@@ -162,12 +193,16 @@ const homePage = () => {
 							<img className={styles.meiBg} src={meituanBanner} alt='' />
 							<div className={styles.getBox}>
 								<p>美团外卖天天领券</p>
-								<a href={_.get(userInfo, 'm_url')}>立即领取</a>
+								{!_.isEmpty(mtInfo) && <a href={_.get(mtInfo, 'click_url')}>立即领取</a>}
 							</div>
 						</div>
-						<a href={_.get(userInfo, 'm_url')} className={styles.meiBtn} type="primary">领红包点外卖</a>
-						<a href={_.get(userInfo, 'm_short_link')} className={styles.meiBtn}>分享链接赚钱</a>
-						<a href={_.get(userInfo, 'm_qrcode_url')} className={styles.meiBtn}>分享海报赚钱</a>
+						{!_.isEmpty(mtInfo) && <img className={styles.qrCode} src={_.get(mtInfo, 'wx_mini_qrcode_url')} />}
+						{/* {!_.isEmpty(mtInfo) && <>
+							<a href={_.get(mtInfo, 'click_url')} className={styles.meiBtn} type="primary">领红包点外卖</a>
+							<a href={_.get(mtInfo, 'm_short_link')} className={styles.meiBtn}>分享链接赚钱</a>
+							<a href={_.get(mtInfo, 'm_qrcode_url')} className={styles.meiBtn}>分享海报赚钱</a>
+						</>
+						} */}
 					</div>
 				</TabBar.Item>
 				<TabBar.Item
@@ -185,6 +220,11 @@ const homePage = () => {
 				</TabBar.Item>
 
 			</TabBar>
+			<ActivityIndicator
+				toast
+				text="加载中..."
+				animating={loading}
+			/>
 		</div >
 	);
 }
