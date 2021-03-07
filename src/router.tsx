@@ -5,6 +5,7 @@ import { Redirect, Route, Router } from 'react-router-dom';
 import { LoadableExamplePage } from './pages/Example/Loadable';
 import history from './utils/history-helper';
 import homePage from './pages/homePage/homePage';
+import orderPage from './pages/OrderPage/orderPage'
 export interface RouteType {
   routerPath: string;
   pageTitle: string;
@@ -22,6 +23,11 @@ const routes: RouteType[] = [
     routerPath: 'index',
     pageTitle: '外卖联盟',
     component: homePage
+  },
+  {
+    routerPath: 'order',
+    pageTitle: "订单中心",
+    component: orderPage
   },
   {
     routerPath: 'example/:exampleId?',

@@ -104,13 +104,22 @@ height: 100%;
 }
 & .cardBox{
     width: 95%;
-    margin: 0 auto;
+    margin: 10px auto;
     background: #fff;
     border-radius: 6px;
     padding: 16px 16px;
     & .cardTitle{
         font-size: 16px;
         font-weight: bold;
+& span{
+  background: url(../../assets/images/icon_up.png) no-repeat;
+  transform:rotate(90deg);
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: contain;
+  float:right;
+}
     }
     & .cardContent{
         display: flex;
@@ -143,6 +152,7 @@ height: 100%;
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
+ 
   & .topImg{
     width: 100%;
   }
@@ -189,7 +199,12 @@ height: 100%;
       display: flex;
       align-items: flex-end;
       position: relative;
-
+      &.step2{
+        background-image: url(../../assets/images/m_step_2.png);
+      }
+      &.step3{
+        background-image: url(../../assets/images/m_step_3.png);
+      }
       &::after{
         content:"";
         position: absolute;
@@ -246,7 +261,7 @@ height: 100%;
     margin:10px auto;
     color: #fff;
     font-size: 16px;
-    background-color: #ff4301;
+    background-color: #f60;
     border-radius: 20px;
     width: 150px;
     font-weight: bold;
@@ -294,5 +309,36 @@ height: 100%;
         color: #ff4301;
       }
     }
+  }
+
+  &.eleContainer{
+    background-color: #027dd8;
+    & .stepBox{
+     
+      & span{
+        background-image: url(../../assets/images/e_step_1.png);
+        &::after{
+          background-image: url(../../assets/images/e_arrow.png);
+        }
+      &.step2{
+        background-image: url(../../assets/images/e_step_2.png);
+      }
+      &.step3{
+        background-image: url(../../assets/images/e_step_3.png);
+      }
+      }
+    }
+
+    & .splitBox{
+      &::before,&::after{
+        background: #027dd8;
+      }
+    }
+     & .getTicketBtn{
+       background-color: #027dd8;
+     }
+     & .btnBox{
+       & a{background-color: #f60;}
+     }
   }
 }

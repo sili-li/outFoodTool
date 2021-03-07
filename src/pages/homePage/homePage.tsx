@@ -1,33 +1,35 @@
 import React, { useState, useEffect } from 'react'
-import { TabBar, Carousel, Toast, ActivityIndicator } from 'antd-mobile';
+import { TabBar, Toast, ActivityIndicator } from 'antd-mobile';
 import _ from 'lodash'
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 // import qs from 'qs'
 import classnames from 'classnames'
 import styles from './homePage.module.css'
 import Api from '../../lib/api';
-import meituanBanner from '../../assets/images/mt_bannerjpg.jpg'
-import elmBanner from '../../assets/images/elm_banner.png'
 import meiTopImg from '../../assets/images/meiTop.png'
+import eleTopImg from '../../assets/images/e_top.png'
+import history from '../../utils/history-helper';
 
 const signUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0dc05810f1191cd5&response_type=code&scope=snsapi_userinfo&state=94dab25593d3fffeb4d60934c3b0c502&connect_redirect=1#wechat_redirect"
 const homePage = () => {
-	const [selectedTab, setSelectTab] = useState<string>('meituan');
+	const [selectedTab, setSelectTab] = useState<string>('mine');
 	const [userInfo, setUserInfo] = useState();
 	const [eleInfo, setEleInfo] = useState();
 	const [mtInfo, setMtInfo] = useState();
-	const [token, setToken] = useState('8c713092c495478dfe8d34862386ffb3');
+	const [token, setToken] = useState();
 	const [loading, setIsLoading] = useState(false);
 	// const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
 	// const token = _.get(queryParams, 'token');
-
+	//待删
+	// localStorage.setItem('token', '8c713092c495478dfe8d34862386ffb3')
 	useEffect(() => {
 		Api.post('/wechat/login', {}).then((res: any) => {
 			// 未授权
 			if (_.get(res, 'data.code') === 1000) {
 				window.location.href = `${signUrl}&redirect_uri=${location.href}`
 			} else if (_.get(res, 'data.code') === 0) {
-				setToken(_.get(res, 'data.data.token'))
+				setToken(_.get(res, 'data.data.token'));
+				localStorage.setItem('token', _.get(res, 'data.data.token'))
 				// const data = _.get(res, 'data.data.info')
 				// setUserInfo(data || {})
 				getActivityInfo(1);
@@ -63,51 +65,23 @@ const homePage = () => {
 				<div className={styles.cardContent}>
 					<div className={styles.cardItem}>
 						<span>当前余额(元)</span>
-						<span>{_.get(userInfo, 'balance')}</span>
+						<span>{_.get(userInfo, 'balance') || '-'}</span>
 					</div>
 					<div className={styles.cardItem}>
 						<span>即将到账(元)</span>
-						<span>{_.get(userInfo, 'cash_amount')}</span>
+						<span>{_.get(userInfo, 'cash_amount') || '-'}</span>
 					</div>
 					<div className={styles.cardItem}>
 						<span>累计到账(元)</span>
-						<span>{_.get(userInfo, 'commission_rate')}</span>
+						<span>{_.get(userInfo, 'commission_rate') || "-"}</span>
 					</div>
 				</div>
 			</div>
+			<div className={styles.cardBox}>
+				<div className={styles.cardTitle} onClick={() => history.push('order')}>我的订单<span /></div>
+			</div>
 		</div>
 	}
-
-	const renderBanner = () => {
-		return <Carousel
-			autoplay={true}
-			infinite
-		>
-			<a
-				key='meituan'
-				href="/"
-				style={{ display: 'inline-block', width: '100%', height: 'auto' }}
-			>
-				<img
-					src={meituanBanner}
-					alt=""
-					style={{ width: '100%', verticalAlign: 'top' }}
-				/>
-			</a>
-			<a
-				key='ele'
-				href="/"
-				style={{ display: 'inline-block', width: '100%', height: 'auto' }}
-			>
-				<img
-					src={elmBanner}
-					alt=""
-					style={{ width: '100%', verticalAlign: 'top' }}
-				/>
-			</a>
-		</Carousel>
-	}
-
 	const renderIcon = (styleName: any) => {
 		return <div className={classnames(styles.tabIcon, styleName)}></div>
 	}
@@ -185,16 +159,37 @@ const homePage = () => {
 					}}
 					data-seed="logId"
 				>
-					<div className={styles.meiContent}>
-						{renderBanner()}
-						<div className={styles.contentBox}>
-							<img className={styles.meiBg} src={elmBanner} alt='' />
-							<div className={styles.getBox}>
-								<p>饿了么天天领券</p>
-								{!_.isEmpty(eleInfo) && <a href={_.get(eleInfo, 'click_url')}>立即领取</a>}
+					<div className={classnames(styles.meiContent, styles.meiContainer, styles.eleContainer)}>
+						<img className={styles.topImg} src={eleTopImg} />
+						<div className={styles.cardContainer}>
+							<div className={styles.stepBox}>
+								<div><span></span><i>先领券</i></div>
+								<div><span className={styles.step2}></span><i>再下单</i></div>
+								<div><span className={styles.step3}></span><i>拿返利</i></div>
 							</div>
+							<div className={styles.splitBox}>
+								................................................................................................
+							</div>
+							<div className={styles.qrcodeBox}>
+								{!_.isEmpty(eleInfo) && <img className={styles.qrCode} src={_.get(eleInfo, 'wx_mini_qrcode_url')} />}
+							</div>
+							<a className={styles.getTicketBtn} href={_.get(eleInfo, 'click_url')}>领红包点外卖</a>
 						</div>
-						{!_.isEmpty(eleInfo) && <img className={styles.qrCode} src={_.get(eleInfo, 'wx_mini_qrcode_url')} />}
+						<div className={styles.btnBox}>
+							<a href={_.get(eleInfo, 'short_url')}>分享赚钱</a>
+							<CopyToClipboard text={`饿了么官方发大招了✌️ \n新出一个加餐红包😘\n多一份选择多省点钱🌹\n说不定运气好还可以白嫖🐮\n${_.get(eleInfo, 'short_url')}`}
+								onCopy={() => Toast.info("复制成功")}
+							>
+								<div className={styles.copyBtn}>复制文案</div>
+							</CopyToClipboard>
+						</div>
+						<div className={styles.tipsBox}>
+							<h3>返利注意事项：</h3>
+							<p>1.领券下单均有返利，返利按照订单实际支付金额为准；</p>
+							<p>2.必须使用从本页获得的红包码领券，领券后使用红包下单才有返利；</p>
+							<p>3.领券后在红包有效期内下单均有返利；</p>
+							<p>4.无论饿了么新老用户，每个手机号每天可领一次，红包金额随机发放；</p>
+						</div>
 					</div>
 				</TabBar.Item>
 				<TabBar.Item
@@ -214,8 +209,8 @@ const homePage = () => {
 						<div className={styles.cardContainer}>
 							<div className={styles.stepBox}>
 								<div><span></span><i>先领券</i></div>
-								<div><span></span><i>再下单</i></div>
-								<div><span></span><i>拿返利</i></div>
+								<div><span className={styles.step2}></span><i>再下单</i></div>
+								<div><span className={styles.step3}></span><i>拿返利</i></div>
 							</div>
 							<div className={styles.splitBox}>
 								................................................................................................

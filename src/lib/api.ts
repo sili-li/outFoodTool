@@ -16,7 +16,7 @@ const handleTokenExpired = (err: any) => {
 };
 
 Api.interceptors.request.use(config => {
-  config.headers = { ...config.headers };
+  config.headers = { ...config.headers, token: localStorage.getItem('token') };
   return config;
 });
 

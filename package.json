@@ -12,6 +12,7 @@
     "classnames": "^2.2.6",
     "core-js": "^3.3.3",
     "lodash": "^4.17.20",
+    "moment": "^2.29.1",
     "qs": "^6.9.4",
     "react": "^16.8.3",
     "react-copy-to-clipboard": "^5.0.3",

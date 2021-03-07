@@ -1,0 +1,88 @@
+.orderContainer{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    & .itemContianer{
+        background: #fff;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px;
+    }
+    & .itemCard{
+        display: flex;
+        & .itemType{
+            width: 80px;
+            flex-shrink: 0;
+            background: url(../../assets/images/mtsc.png) no-repeat;
+            background-size: 50px 50px;
+            background-position: center;
+            &.eleType{
+                background-image: url(../../assets/images/elmwm.png);
+            }
+        }
+
+        & .rightItem{
+            display: flex;
+            flex-direction: column;
+            & .title{
+                font-size: 16px;
+                color: #000;
+            }
+            & .subInfo{
+                font-size: 12px;
+                margin-top: 4px;
+                color: #9e9d9d;
+            }
+        }
+    }
+
+    & .bottom{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top:10px;
+        & .left{
+            & span{
+                color: #000;
+                font-size: 16px;
+                &.money{
+                    color: #ff4301;
+                    font-weight: bold;
+                }
+            }
+            & div{
+                color: #9e9d9d;
+                font-size: 12px;
+                margin-top: 4px;
+            }
+        }
+        & .orderDetail{
+            color: #9e9d9d;
+            & span{
+                background: url(../../assets/images/icon_up.png) no-repeat;
+                transform:rotate(90deg);
+                display: inline-block;
+                width: 14px;
+                height: 14px;
+                background-size: contain;
+                float:right;
+              }
+        }
+    }
+
+    & .empty{
+        width: 100%;
+        background: url(../../assets/images/empty.png) no-repeat;
+        height: 300px;
+        background-size: contain;
+    }
+    & :global{
+       & .am-tabs-default-bar-tab-active{
+            color: #ff4301;
+        }
+        & .am-tabs-default-bar-underline{
+            border-color:#ff4301;
+        }
+    }
+}
