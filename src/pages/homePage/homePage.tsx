@@ -21,7 +21,7 @@ const homePage = () => {
 	// const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
 	// const token = _.get(queryParams, 'token');
 	//待删
-	localStorage.setItem('token', '8c713092c495478dfe8d34862386ffb3')
+	// localStorage.setItem('token', '8c713092c495478dfe8d34862386ffb3')
 	useEffect(() => {
 		Api.post('/wechat/login', {}).then((res: any) => {
 			// 未授权
