@@ -1,49 +1,55 @@
 import React, { useState, useEffect } from 'react'
 import { TabBar, Carousel, Toast, ActivityIndicator } from 'antd-mobile';
 import _ from 'lodash'
-import qs from 'qs'
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+// import qs from 'qs'
 import classnames from 'classnames'
 import styles from './homePage.module.css'
 import Api from '../../lib/api';
 import meituanBanner from '../../assets/images/mt_bannerjpg.jpg'
 import elmBanner from '../../assets/images/elm_banner.png'
+import meiTopImg from '../../assets/images/meiTop.png'
 
+const signUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0dc05810f1191cd5&response_type=code&scope=snsapi_userinfo&state=94dab25593d3fffeb4d60934c3b0c502&connect_redirect=1#wechat_redirect"
 const homePage = () => {
 	const [selectedTab, setSelectTab] = useState<string>('meituan');
 	const [userInfo, setUserInfo] = useState();
 	const [eleInfo, setEleInfo] = useState();
 	const [mtInfo, setMtInfo] = useState();
+	const [token, setToken] = useState('8c713092c495478dfe8d34862386ffb3');
 	const [loading, setIsLoading] = useState(false);
-	const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
-	const token = _.get(queryParams, 'token');
+	// const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
+	// const token = _.get(queryParams, 'token');
 
 	useEffect(() => {
-		if (_.isEmpty(token)) {
-			Api.get('/wechat/login').then((res: any) => {
-				if (_.get(res, 'data.code') === 0) {
-					const url = _.get(res, 'data.data.url');
-					if (!_.isEmpty(url)) {
-						window.location.href = url
-					}
-				}
-			}).catch((error: any) => {
-				Toast.fail('登录失败')
-				console.log("=====no error", error)
-			})
-			// window.open('http://api.wm.yuejuwenhua.com/wechat/index')
-		} else {
-			///wechat/index?token=035c94156320d656250e32aef241febf
-			Api.get(`/wechat/login?token=${token}`).then((res: any) => {
-				if (_.get(res, 'data.code') === 0) {
-					const data = _.get(res, 'data.data.info')
-					setUserInfo(data || {})
-					getActivityInfo(1);
-				}
-			}).catch((error: any) => {
-				Toast.fail('获取信息失败')
-				console.log("error===", error)
-			})
-		}
+		Api.post('/wechat/login', {}).then((res: any) => {
+			// 未授权
+			if (_.get(res, 'data.code') === 1000) {
+				window.location.href = `${signUrl}&redirect_uri=${location.href}`
+			} else if (_.get(res, 'data.code') === 0) {
+				setToken(_.get(res, 'data.data.token'))
+				// const data = _.get(res, 'data.data.info')
+				// setUserInfo(data || {})
+				getActivityInfo(1);
+			}
+		}).catch((error: any) => {
+			Toast.fail('授权失败')
+			console.log("=====no error", error)
+		})
+		// window.open('http://api.wm.yuejuwenhua.com/wechat/index')
+		// } else {
+		// 	///wechat/index?token=035c94156320d656250e32aef241febf
+		// 	Api.post(`/wechat/login?token=${token}`).then((res: any) => {
+		// 		if (_.get(res, 'data.code') === 0) {
+		// 			const data = _.get(res, 'data.data.info')
+		// 			setUserInfo(data || {})
+		// 			getActivityInfo(1);
+		// 		}
+		// 	}).catch((error: any) => {
+		// 		Toast.fail('获取信息失败')
+		// 		console.log("error===", error)
+		// 	})
+		// }
 	}, [])
 
 	const renderMine = () => {
@@ -119,24 +125,45 @@ const homePage = () => {
 
 	const getActivityInfo = (type: number) => {
 		//1 美团
-		//2 饿了么
+		//2 饿了么'8dae0bbb4f2819b5bf169bf6babce304'
 		setIsLoading(true)
-		Api.post('/wechat/getActivityInfo', {
-			type, token: '8dae0bbb4f2819b5bf169bf6babce304'
-		}).then((res: any) => {
-			if (_.get(res, 'data.code') === 0) {
-				const data = _.get(res, 'data.data')
-				if (type == 1) {
-					setMtInfo(data)
-				} else {
-					setEleInfo(data)
+		if (type === 3) {
+			Api.post('/wechat/get-user-info', {
+			}, {
+				headers: {
+					token
 				}
-			}
-		}).catch(() => {
-			Toast.fail('获取活动失败')
-		}).finally(() => {
-			setIsLoading(false)
-		})
+			}).then((res: any) => {
+				if (_.get(res, 'data.code') === 0) {
+					const data = _.get(res, 'data.data.user_info')
+					setUserInfo(data || {})
+					getActivityInfo(1);
+				}
+			}).finally(() => {
+				setIsLoading(false)
+			})
+		} else {
+			Api.post('/wechat/get-activity-info', {
+				type
+			}, {
+				headers: {
+					token
+				}
+			}).then((res: any) => {
+				if (_.get(res, 'data.code') === 0) {
+					const data = _.get(res, 'data.data')
+					if (type == 1) {
+						setMtInfo(data)
+					} else {
+						setEleInfo(data)
+					}
+				}
+			}).catch(() => {
+				Toast.fail('获取活动失败')
+			}).finally(() => {
+				setIsLoading(false)
+			})
+		}
 	}
 
 	return (
@@ -168,11 +195,6 @@ const homePage = () => {
 							</div>
 						</div>
 						{!_.isEmpty(eleInfo) && <img className={styles.qrCode} src={_.get(eleInfo, 'wx_mini_qrcode_url')} />}
-						{/* {!_.isEmpty(eleInfo) && <>
-							<a href={_.get(eleInfo, 'click_url')} className={classnames(styles.meiBtn, styles.eleBtn)} type="primary">领红包点外卖</a>
-							<a href={_.get(eleInfo, 'e_short_link')} className={classnames(styles.meiBtn, styles.eleBtn)}>分享链接赚钱</a>
-							<a href={_.get(eleInfo, 'e_qrcode_url')} className={classnames(styles.meiBtn, styles.eleBtn)}>分享海报赚钱</a>
-						</>} */}
 					</div>
 				</TabBar.Item>
 				<TabBar.Item
@@ -187,22 +209,37 @@ const homePage = () => {
 					}}
 					data-seed="logId1"
 				>
-					<div className={styles.meiContent}>
-						{renderBanner()}
-						<div className={styles.contentBox}>
-							<img className={styles.meiBg} src={meituanBanner} alt='' />
-							<div className={styles.getBox}>
-								<p>美团外卖天天领券</p>
-								{!_.isEmpty(mtInfo) && <a href={_.get(mtInfo, 'click_url')}>立即领取</a>}
+					<div className={classnames(styles.meiContent, styles.meiContainer)}>
+						<img className={styles.topImg} src={meiTopImg} />
+						<div className={styles.cardContainer}>
+							<div className={styles.stepBox}>
+								<div><span></span><i>先领券</i></div>
+								<div><span></span><i>再下单</i></div>
+								<div><span></span><i>拿返利</i></div>
 							</div>
+							<div className={styles.splitBox}>
+								................................................................................................
+							</div>
+							<div className={styles.qrcodeBox}>
+								{!_.isEmpty(mtInfo) && <img className={styles.qrCode} src={_.get(mtInfo, 'wx_mini_qrcode_url')} />}
+							</div>
+							<a className={styles.getTicketBtn} href={_.get(mtInfo, 'click_url')}>领红包点外卖</a>
 						</div>
-						{!_.isEmpty(mtInfo) && <img className={styles.qrCode} src={_.get(mtInfo, 'wx_mini_qrcode_url')} />}
-						{/* {!_.isEmpty(mtInfo) && <>
-							<a href={_.get(mtInfo, 'click_url')} className={styles.meiBtn} type="primary">领红包点外卖</a>
-							<a href={_.get(mtInfo, 'm_short_link')} className={styles.meiBtn}>分享链接赚钱</a>
-							<a href={_.get(mtInfo, 'm_qrcode_url')} className={styles.meiBtn}>分享海报赚钱</a>
-						</>
-						} */}
+						<div className={styles.btnBox}>
+							<a href={_.get(mtInfo, 'short_url')}>分享赚钱</a>
+							<CopyToClipboard text={`【美团外卖福利红包】每日限时抢，最高可得66元！\n${_.get(mtInfo, 'short_url')}`}
+								onCopy={() => Toast.info("复制成功")}
+							>
+								<div className={styles.copyBtn}>复制文案</div>
+							</CopyToClipboard>
+						</div>
+						<div className={styles.tipsBox}>
+							<h3>返利注意事项：</h3>
+							<p>1.美团外卖，必须使用带<i>【专享】</i>标记的优惠券才有返利；</p>
+							<p>2.领券后在红包有效期内下单均有返利；</p>
+							<p>3.美团绑定的手机号，需与领券登录的手机号一致；</p>
+							<p>4.无论美团新老用户，每个手机号每天可领一次，红包金额随机发放；</p>
+						</div>
 					</div>
 				</TabBar.Item>
 				<TabBar.Item
@@ -214,6 +251,7 @@ const homePage = () => {
 					selected={selectedTab === 'mine'}
 					onPress={() => {
 						setSelectTab('mine')
+						getActivityInfo(3)
 					}}
 				>
 					{renderMine()}
