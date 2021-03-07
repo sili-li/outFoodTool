@@ -6,6 +6,8 @@ import { LoadableExamplePage } from './pages/Example/Loadable';
 import history from './utils/history-helper';
 import homePage from './pages/homePage/homePage';
 import orderPage from './pages/OrderPage/orderPage'
+import orderDetailPage from './pages/OrderDetailPage/OrderDetail'
+
 export interface RouteType {
   routerPath: string;
   pageTitle: string;
@@ -28,6 +30,11 @@ const routes: RouteType[] = [
     routerPath: 'order',
     pageTitle: "订单中心",
     component: orderPage
+  },
+  {
+    routerPath: "orderDetail",
+    pageTitle: "订单详情",
+    component: orderDetailPage
   },
   {
     routerPath: 'example/:exampleId?',

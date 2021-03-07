@@ -21,7 +21,7 @@ const homePage = () => {
 	// const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
 	// const token = _.get(queryParams, 'token');
 	//待删
-	// localStorage.setItem('token', '8c713092c495478dfe8d34862386ffb3')
+	localStorage.setItem('token', '8c713092c495478dfe8d34862386ffb3')
 	useEffect(() => {
 		Api.post('/wechat/login', {}).then((res: any) => {
 			// 未授权
@@ -61,7 +61,7 @@ const homePage = () => {
 				<span>{_.get(userInfo, 'nickname')}</span>
 			</div>
 			<div className={styles.cardBox}>
-				<div className={styles.cardTitle}>我的返利</div>
+				<div className={styles.cardTitle}>我的返利<span>立即提现</span></div>
 				<div className={styles.cardContent}>
 					<div className={styles.cardItem}>
 						<span>当前余额(元)</span>
@@ -78,7 +78,7 @@ const homePage = () => {
 				</div>
 			</div>
 			<div className={styles.cardBox}>
-				<div className={styles.cardTitle} onClick={() => history.push('order')}>我的订单<span /></div>
+				<div className={styles.cardTitle} onClick={() => history.push('order')}>我的订单<span>立即查看</span></div>
 			</div>
 		</div>
 	}

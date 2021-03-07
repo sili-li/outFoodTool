@@ -5,6 +5,8 @@ import styles from './style.module.css'
 import Api from '../../lib/api'
 import classnames from 'classnames'
 import moment from 'moment'
+import emptyImg from '../../assets/images/empty.png'
+import history from '../../utils/history-helper'
 
 const tabs = [
     { title: "全部", key: '0' },
@@ -70,7 +72,7 @@ const OrderPage = () => {
                                 {getOrderStatus(_.get(item, 'status'))}：
                                 {moment(_.get(item, 'update_time')).format("yyyy-MM-DD hh:mm:ss")}</div>
                         </div>
-                        <div className={styles.orderDetail}>订单详情<span /></div>
+                        <div className={styles.orderDetail} onClick={() => history.push({ pathname: 'orderDetail', state: item })}>订单详情<span /></div>
                     </div>
                 </div>
             )
@@ -80,7 +82,10 @@ const OrderPage = () => {
 
     const renderTabs = () => {
         if (!loading && _.isEmpty(orderData)) {
-            return <div className={styles.empty} />
+            return <div className={styles.empty}>
+                <img src={emptyImg} />
+                <p>暂无数据</p>
+            </div>
         } else {
             return renderItems()
         }

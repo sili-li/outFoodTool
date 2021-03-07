@@ -111,15 +111,26 @@ height: 100%;
     & .cardTitle{
         font-size: 16px;
         font-weight: bold;
-& span{
-  background: url(../../assets/images/icon_up.png) no-repeat;
-  transform:rotate(90deg);
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  background-size: contain;
-  float:right;
-}
+
+    & span{
+      font-size: 14px;
+      position: relative;
+      color: #9e9d9d;
+      display: block;
+      float: right;
+      font-weight: normal;
+      padding-right: 6px;
+      &::after{
+        content:"";
+        position: absolute;
+        background: url(../../assets/images/icon_up.png) no-repeat;
+        transform:rotate(90deg);
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        background-size: contain;
+      }
+     }
     }
     & .cardContent{
         display: flex;
