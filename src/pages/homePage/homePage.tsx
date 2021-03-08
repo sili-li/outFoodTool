@@ -1,19 +1,19 @@
-import { ActivityIndicator, TabBar, Toast } from "antd-mobile";
+import { ActivityIndicator, TabBar, Toast } from 'antd-mobile';
 // import qs from 'qs'
-import classnames from "classnames";
-import _ from "lodash";
-import React, { useEffect, useState } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import eleTopImg from "../../assets/images/e_top.png";
-import meiTopImg from "../../assets/images/meiTop.png";
-import Api from "../../lib/api";
-import history from "../../utils/history-helper";
-import styles from "./homePage.module.css";
+import classnames from 'classnames';
+import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import eleTopImg from '../../assets/images/e_top.png';
+import meiTopImg from '../../assets/images/meiTop.png';
+import Api from '../../lib/api';
+import history from '../../utils/history-helper';
+import styles from './homePage.module.css';
 
 const signUrl =
-  "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0dc05810f1191cd5&response_type=code&scope=snsapi_userinfo&state=94dab25593d3fffeb4d60934c3b0c502&connect_redirect=1#wechat_redirect";
+  'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0dc05810f1191cd5&response_type=code&scope=snsapi_userinfo&state=94dab25593d3fffeb4d60934c3b0c502&connect_redirect=1#wechat_redirect';
 const homePage = () => {
-  const [selectedTab, setSelectTab] = useState<string>("meituan");
+  const [selectedTab, setSelectTab] = useState<string>('meituan');
   const [userInfo, setUserInfo] = useState();
   const [eleInfo, setEleInfo] = useState();
   const [mtInfo, setMtInfo] = useState();
@@ -24,21 +24,21 @@ const homePage = () => {
   // 待删
   // localStorage.setItem('token', '8c713092c495478dfe8d34862386ffb3')
   useEffect(() => {
-    Api.post("/wechat/login", {})
+    Api.post('/wechat/login', {})
       .then((res: any) => {
         // 未授权
-        if (_.get(res, "data.code") === 1000) {
+        if (_.get(res, 'data.code') === 1000) {
           window.location.href = `${signUrl}&redirect_uri=${location.href}`;
-        } else if (_.get(res, "data.code") === 0) {
-          setToken(_.get(res, "data.data.token"));
-          localStorage.setItem("token", _.get(res, "data.data.token"));
+        } else if (_.get(res, 'data.code') === 0) {
+          setToken(_.get(res, 'data.data.token'));
+          localStorage.setItem('token', _.get(res, 'data.data.token'));
           // const data = _.get(res, 'data.data.info')
           // setUserInfo(data || {})
           getActivityInfo(1);
         }
       })
       .catch((error: any) => {
-        Toast.fail("授权失败");
+        Toast.fail('授权失败');
       });
     // window.open('http://api.wm.yuejuwenhua.com/wechat/index')
     // } else {
@@ -60,8 +60,8 @@ const homePage = () => {
     return (
       <div className={styles.mineBg}>
         <div className={styles.imgBox}>
-          <img src={_.get(userInfo, "avatar")} />
-          <span>{_.get(userInfo, "nickname")}</span>
+          <img src={_.get(userInfo, 'avatar')} />
+          <span>{_.get(userInfo, 'nickname')}</span>
         </div>
         <div className={styles.cardBox}>
           <div className={styles.cardTitle}>
@@ -70,22 +70,22 @@ const homePage = () => {
           <div className={styles.cardContent}>
             <div className={styles.cardItem}>
               <span>当前余额(元)</span>
-              <span>{_.get(userInfo, "balance") || "-"}</span>
+              <span>{_.get(userInfo, 'balance') || '-'}</span>
             </div>
             <div className={styles.cardItem}>
               <span>即将到账(元)</span>
-              <span>{_.get(userInfo, "cash_amount") || "-"}</span>
+              <span>{_.get(userInfo, 'cash_amount') || '-'}</span>
             </div>
             <div className={styles.cardItem}>
               <span>累计到账(元)</span>
-              <span>{_.get(userInfo, "commission_rate") || "-"}</span>
+              <span>{_.get(userInfo, 'commission_rate') || '-'}</span>
             </div>
           </div>
         </div>
         <div className={styles.cardBox}>
           <div
             className={styles.cardTitle}
-            onClick={() => history.push("order")}
+            onClick={() => history.push('order')}
           >
             我的订单<span>立即查看</span>
           </div>
@@ -99,12 +99,12 @@ const homePage = () => {
 
   const getSelectedColor = () => {
     switch (selectedTab) {
-      case "ele":
-        return "#33A3F4";
-      case "meituan":
-        return "#FFC300";
+      case 'ele':
+        return '#33A3F4';
+      case 'meituan':
+        return '#FFC300';
       default:
-        return "#f40";
+        return '#f40';
     }
   };
 
@@ -114,7 +114,7 @@ const homePage = () => {
     setIsLoading(true);
     if (type === 3) {
       Api.post(
-        "/wechat/get-user-info",
+        '/wechat/get-user-info',
         {},
         {
           headers: {
@@ -123,8 +123,8 @@ const homePage = () => {
         }
       )
         .then((res: any) => {
-          if (_.get(res, "data.code") === 0) {
-            const data = _.get(res, "data.data.user_info");
+          if (_.get(res, 'data.code') === 0) {
+            const data = _.get(res, 'data.data.user_info');
             setUserInfo(data || {});
             getActivityInfo(1);
           }
@@ -134,7 +134,7 @@ const homePage = () => {
         });
     } else {
       Api.post(
-        "/wechat/get-activity-info",
+        '/wechat/get-activity-info',
         {
           type,
         },
@@ -145,8 +145,8 @@ const homePage = () => {
         }
       )
         .then((res: any) => {
-          if (_.get(res, "data.code") === 0) {
-            const data = _.get(res, "data.data");
+          if (_.get(res, 'data.code') === 0) {
+            const data = _.get(res, 'data.data');
             if (type == 1) {
               setMtInfo(data);
             } else {
@@ -155,7 +155,7 @@ const homePage = () => {
           }
         })
         .catch(() => {
-          Toast.fail("获取活动失败");
+          Toast.fail('获取活动失败');
         })
         .finally(() => {
           setIsLoading(false);
@@ -164,7 +164,7 @@ const homePage = () => {
   };
 
   return (
-    <div style={{ position: "fixed", height: "100%", width: "100%", top: 0 }}>
+    <div style={{ position: 'fixed', height: '100%', width: '100%', top: 0 }}>
       <TabBar
         unselectedTintColor="#949494"
         tintColor={getSelectedColor()}
@@ -175,9 +175,9 @@ const homePage = () => {
           key="ele"
           icon={renderIcon(styles.eleIcon)}
           selectedIcon={renderIcon(styles.eleSelected)}
-          selected={selectedTab === "ele"}
+          selected={selectedTab === 'ele'}
           onPress={() => {
-            setSelectTab("ele");
+            setSelectTab('ele');
             _.isEmpty(eleInfo) && getActivityInfo(2);
           }}
           data-seed="logId"
@@ -212,25 +212,25 @@ const homePage = () => {
                 {!_.isEmpty(eleInfo) && (
                   <img
                     className={styles.qrCode}
-                    src={_.get(eleInfo, "wx_mini_qrcode_url")}
+                    src={_.get(eleInfo, 'wx_mini_qrcode_url')}
                   />
                 )}
               </div>
               <a
                 className={styles.getTicketBtn}
-                href={_.get(eleInfo, "click_url")}
+                href={_.get(eleInfo, 'click_url')}
               >
                 领红包点外卖
               </a>
             </div>
             <div className={styles.btnBox}>
-              <a href={_.get(eleInfo, "short_url")}>分享赚钱</a>
+              <a href={_.get(eleInfo, 'short_url')}>分享赚钱</a>
               <CopyToClipboard
                 text={`饿了么官方发大招了✌️ \n新出一个加餐红包😘\n多一份选择多省点钱🌹\n说不定运气好还可以白嫖🐮\n${_.get(
                   eleInfo,
-                  "short_url"
+                  'short_url'
                 )}`}
-                onCopy={() => Toast.info("复制成功")}
+                onCopy={() => Toast.info('复制成功')}
               >
                 <div className={styles.copyBtn}>复制文案</div>
               </CopyToClipboard>
@@ -253,9 +253,9 @@ const homePage = () => {
           selectedIcon={renderIcon(styles.meituanSelected)}
           title="美团领券"
           key="meituan"
-          selected={selectedTab === "meituan"}
+          selected={selectedTab === 'meituan'}
           onPress={() => {
-            setSelectTab("meituan");
+            setSelectTab('meituan');
             _.isEmpty(mtInfo) && getActivityInfo(1);
           }}
           data-seed="logId1"
@@ -284,25 +284,25 @@ const homePage = () => {
                 {!_.isEmpty(mtInfo) && (
                   <img
                     className={styles.qrCode}
-                    src={_.get(mtInfo, "wx_mini_qrcode_url")}
+                    src={_.get(mtInfo, 'wx_mini_qrcode_url')}
                   />
                 )}
               </div>
               <a
                 className={styles.getTicketBtn}
-                href={_.get(mtInfo, "click_url")}
+                href={_.get(mtInfo, 'click_url')}
               >
                 领红包点外卖
               </a>
             </div>
             <div className={styles.btnBox}>
-              <a href={_.get(mtInfo, "short_url")}>分享赚钱</a>
+              <a href={_.get(mtInfo, 'short_url')}>分享赚钱</a>
               <CopyToClipboard
                 text={`【美团外卖福利红包】每日限时抢，最高可得66元！\n${_.get(
                   mtInfo,
-                  "short_url"
+                  'short_url'
                 )}`}
-                onCopy={() => Toast.info("复制成功")}
+                onCopy={() => Toast.info('复制成功')}
               >
                 <div className={styles.copyBtn}>复制文案</div>
               </CopyToClipboard>
@@ -326,9 +326,9 @@ const homePage = () => {
           title="个人中心"
           key="mine"
           dot={true}
-          selected={selectedTab === "mine"}
+          selected={selectedTab === 'mine'}
           onPress={() => {
-            setSelectTab("mine");
+            setSelectTab('mine');
             getActivityInfo(3);
           }}
         >
