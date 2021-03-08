@@ -3,10 +3,10 @@ import React from 'react';
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
 import { Redirect, Route, Router } from 'react-router-dom';
 import { LoadableExamplePage } from './pages/Example/Loadable';
-import history from './utils/history-helper';
 import homePage from './pages/homePage/homePage';
-import orderPage from './pages/OrderPage/orderPage'
 import orderDetailPage from './pages/OrderDetailPage/OrderDetail'
+import orderPage from './pages/OrderPage/orderPage'
+import history from './utils/history-helper';
 
 export interface RouteType {
   routerPath: string;
@@ -28,12 +28,12 @@ const routes: RouteType[] = [
   },
   {
     routerPath: 'order',
-    pageTitle: "订单中心",
+    pageTitle: '订单中心',
     component: orderPage
   },
   {
-    routerPath: "orderDetail",
-    pageTitle: "订单详情",
+    routerPath: 'orderDetail',
+    pageTitle: '订单详情',
     component: orderDetailPage
   },
   {
