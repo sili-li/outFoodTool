@@ -19,15 +19,13 @@ const homePage = () => {
 	const [token, setToken] = useState();
 	const [loading, setIsLoading] = useState(false);
 	const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
-	const code = _.get(queryParams, 'code');
-	const state = _.get(queryParams, 'state');
-	const pid = _.get(queryParams, 'pid') || "";
+	const code = _.get(queryParams, 'code') || "";
+	// const state = _.get(queryParams, 'state');
+	// const pid = _.get(queryParams, 'pid') || "";
 	//待删
 	// localStorage.setItem('token', '8c713092c495478dfe8d34862386ffb3')
 	useEffect(() => {
-		Api.post('/wechat/login', {
-			code, state, pid
-		}).then((res: any) => {
+		Api.get(`/wechat/login?code=${code}`).then((res: any) => {
 			// 未授权
 			if (_.get(res, 'data.code') === 1000) {
 				window.location.href = _.get(res, 'data.data.oauth_url')
@@ -37,7 +35,7 @@ const homePage = () => {
 				getActivityInfo(1);
 			}
 		}).catch((error: any) => {
-			Toast.fail('授权失败')
+			Toast.fail('登录失败')
 			console.log("=====no error", error)
 		})
 
