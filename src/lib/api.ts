@@ -2,7 +2,7 @@ import axios from 'axios';
 // import pg from '../../package.json';
 
 const Api = axios.create({
-  baseURL: '/api',
+  baseURL: `/api`,
   timeout: 20000,
   headers: {}
 });
