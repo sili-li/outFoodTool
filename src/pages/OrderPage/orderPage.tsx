@@ -52,6 +52,13 @@ const OrderPage = () => {
         }
     };
 
+    const formatTime = (time: any) => {
+        return moment(new Date(time * 1000)).format(
+            'yyyy-MM-DD hh:mm:ss'
+        )
+        // return new Date(time * 1000).Format('yyyy-MM-dd hh:mm:ss')
+    }
+
     const renderItems = () => {
         return _.map(orderData, (item) => {
             return (
@@ -74,9 +81,7 @@ const OrderPage = () => {
                             </div>
                             <div className={styles.subInfo}>
                                 下单时间：
-                {moment(_.get(item, 'order_time')).format(
-                                'yyyy-MM-DD hh:mm:ss'
-                            )}
+                                {formatTime(_.get(item, 'order_time'))}
                             </div>
 
                             <div className={styles.subInfo}>
@@ -90,9 +95,7 @@ const OrderPage = () => {
                             <span className={styles.money}>{_.get(item, 'use_earn')}</span>
                             <div>
                                 {getOrderStatus(_.get(item, 'status'))}：
-                {moment(_.get(item, 'update_time')).format(
-                                    'yyyy-MM-DD hh:mm:ss'
-                                )}
+                                {formatTime(_.get(item, 'update_time'))}
                             </div>
                         </div>
                         <div
