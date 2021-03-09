@@ -10,21 +10,30 @@ import qs from 'qs'
 import styles from './homePage.module.css'
 import Api from '../../lib/api';
 import history from '../../utils/history-helper';
+const TAB_CONFIG = {
+	MEI_TUAN: 'mt',
+	ELE_M: "elm",
+	MINE: "user"
+}
 // const signUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0dc05810f1191cd5&response_type=code&scope=snsapi_userinfo&state=94dab25593d3fffeb4d60934c3b0c502&connect_redirect=1#wechat_redirect"
 const homePage = () => {
-	const [selectedTab, setSelectTab] = useState<string>('meituan');
+	const [selectedTab, setSelectTab] = useState<string>();
 	const [userInfo, setUserInfo] = useState();
 	const [eleInfo, setEleInfo] = useState();
 	const [mtInfo, setMtInfo] = useState();
 	const [token, setToken] = useState();
 	const [loading, setIsLoading] = useState(false);
-	const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
-	const code = _.get(queryParams, 'code') || "";
+
 	// const state = _.get(queryParams, 'state');
 	// const pid = _.get(queryParams, 'pid') || "";
 	//待删
 	// localStorage.setItem('token', '8c713092c495478dfe8d34862386ffb3')
 	useEffect(() => {
+		const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
+		const code = _.get(queryParams, 'code') || "";
+		const tab = _.get(queryParams, 'tab') || localStorage.getItem('tab');
+		setSelectTab(tab)
+		localStorage.setItem("tab", tab || TAB_CONFIG.MEI_TUAN);
 		Api.get(`/wechat/login?code=${code}`).then((res: any) => {
 			// 未授权
 			if (_.get(res, 'data.code') === 1000) {
@@ -32,7 +41,7 @@ const homePage = () => {
 			} else if (_.get(res, 'data.code') === 0) {
 				setToken(_.get(res, 'data.data.token'));
 				localStorage.setItem('token', _.get(res, 'data.data.token'))
-				getActivityInfo(1);
+				getActivityInfo(tab);
 			}
 		}).catch((error: any) => {
 			Toast.fail('登录失败')
@@ -98,20 +107,20 @@ const homePage = () => {
 
 	const getSelectedColor = () => {
 		switch (selectedTab) {
-			case 'ele':
+			case TAB_CONFIG.ELE_M:
 				return '#33A3F4';
-			case 'meituan':
+			case TAB_CONFIG.MEI_TUAN:
 				return '#FFC300';
 			default:
 				return '#f40';
 		}
 	};
 
-	const getActivityInfo = (type: number) => {
+	const getActivityInfo = (tab: string) => {
 		// 1 美团
 		// 2 饿了么'8dae0bbb4f2819b5bf169bf6babce304'
 		setIsLoading(true);
-		if (type === 3) {
+		if (tab === TAB_CONFIG.MINE) {
 			Api.post(
 				'/wechat/get-user-info',
 				{},
@@ -125,7 +134,6 @@ const homePage = () => {
 					if (_.get(res, 'data.code') === 0) {
 						const data = _.get(res, 'data.data.user_info');
 						setUserInfo(data || {});
-						getActivityInfo(1);
 					}
 				})
 				.finally(() => {
@@ -135,7 +143,7 @@ const homePage = () => {
 			Api.post(
 				'/wechat/get-activity-info',
 				{
-					type,
+					type: tab === TAB_CONFIG.ELE_M ? 2 : 1
 				},
 				{
 					headers: {
@@ -146,7 +154,7 @@ const homePage = () => {
 				.then((res: any) => {
 					if (_.get(res, 'data.code') === 0) {
 						const data = _.get(res, 'data.data');
-						if (type == 1) {
+						if (tab === TAB_CONFIG.MEI_TUAN) {
 							setMtInfo(data);
 						} else {
 							setEleInfo(data);
@@ -171,13 +179,13 @@ const homePage = () => {
 			>
 				<TabBar.Item
 					title="饿了么"
-					key="ele"
+					key={TAB_CONFIG.ELE_M}
 					icon={renderIcon(styles.eleIcon)}
 					selectedIcon={renderIcon(styles.eleSelected)}
-					selected={selectedTab === 'ele'}
+					selected={selectedTab === TAB_CONFIG.ELE_M}
 					onPress={() => {
-						setSelectTab('ele');
-						_.isEmpty(eleInfo) && getActivityInfo(2);
+						setSelectTab(TAB_CONFIG.ELE_M);
+						_.isEmpty(eleInfo) && getActivityInfo(TAB_CONFIG.ELE_M);
 					}}
 					data-seed="logId"
 				>
@@ -251,11 +259,11 @@ const homePage = () => {
 					icon={renderIcon(styles.meituanIcon)}
 					selectedIcon={renderIcon(styles.meituanSelected)}
 					title="美团领券"
-					key="meituan"
-					selected={selectedTab === 'meituan'}
+					key={TAB_CONFIG.MEI_TUAN}
+					selected={selectedTab === TAB_CONFIG.MEI_TUAN}
 					onPress={() => {
-						setSelectTab('meituan');
-						_.isEmpty(mtInfo) && getActivityInfo(1);
+						setSelectTab(TAB_CONFIG.MEI_TUAN);
+						_.isEmpty(mtInfo) && getActivityInfo(TAB_CONFIG.MEI_TUAN);
 					}}
 					data-seed="logId1"
 				>
@@ -323,12 +331,12 @@ const homePage = () => {
 					icon={renderIcon(styles.mineIcon)}
 					selectedIcon={renderIcon(styles.mineSelected)}
 					title="个人中心"
-					key="mine"
+					key={TAB_CONFIG.MINE}
 					dot={true}
-					selected={selectedTab === 'mine'}
+					selected={selectedTab === TAB_CONFIG.MINE}
 					onPress={() => {
-						setSelectTab('mine');
-						getActivityInfo(3);
+						setSelectTab(TAB_CONFIG.MINE);
+						getActivityInfo(TAB_CONFIG.MINE);
 					}}
 				>
 					{renderMine()}
