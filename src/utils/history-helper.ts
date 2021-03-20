@@ -20,7 +20,7 @@ export const history = createBrowserHistory({ basename: pathPrefix });
 updateDocumentTitle(history.location);
 // 路由改变，更新页面标题
 history.listen(location => {
-  updateDocumentTitle(location);
+  // updateDocumentTitle(location);
   analysisPage(location);
 });
 

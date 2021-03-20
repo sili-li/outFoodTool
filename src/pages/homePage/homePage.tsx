@@ -10,6 +10,7 @@ import qs from 'qs'
 import styles from './homePage.module.css'
 import Api from '../../lib/api';
 import history from '../../utils/history-helper';
+import { setStorage } from '../../utils/localStorageHelper';
 const TAB_CONFIG = {
 	MEI_TUAN: 'mt',
 	ELE_M: "elm",
@@ -21,47 +22,35 @@ const homePage = () => {
 	const [userInfo, setUserInfo] = useState();
 	const [eleInfo, setEleInfo] = useState();
 	const [mtInfo, setMtInfo] = useState();
-	const [token, setToken] = useState();
+	const [token, setToken] = useState("13f7a5a0221f4a984ad30eeda54b3f07");
 	const [loading, setIsLoading] = useState(false);
 
 	// const state = _.get(queryParams, 'state');
 	// const pid = _.get(queryParams, 'pid') || "";
+	const onChangeTab = (tab: string) => {
+		setSelectTab(tab)
+		setStorage("tab", tab);
+	}
 	//待删
-	// localStorage.setItem('token', '8c713092c495478dfe8d34862386ffb3')
+	localStorage.setItem('token', '13f7a5a0221f4a984ad30eeda54b3f07')
 	useEffect(() => {
 		const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
 		const code = _.get(queryParams, 'code') || "";
 		const tab = _.get(queryParams, 'tab') || localStorage.getItem('tab');
-		setSelectTab(tab)
-		localStorage.setItem("tab", tab || TAB_CONFIG.MEI_TUAN);
+		onChangeTab(tab || TAB_CONFIG.MEI_TUAN);
 		Api.get(`/wechat/login?code=${code}`).then((res: any) => {
 			// 未授权
 			if (_.get(res, 'data.code') === 1000) {
-				window.location.href = _.get(res, 'data.data.oauth_url')
+				// window.location.href = _.get(res, 'data.data.oauth_url')
 			} else if (_.get(res, 'data.code') === 0) {
 				setToken(_.get(res, 'data.data.token'));
-				localStorage.setItem('token', _.get(res, 'data.data.token'))
+				setStorage('token', _.get(res, 'data.data.token'))
 				getActivityInfo(tab);
 			}
 		}).catch((error: any) => {
 			Toast.fail('登录失败')
 			console.log("=====no error", error)
 		})
-
-		// window.open('http://api.wm.yuejuwenhua.com/wechat/index')
-		// } else {
-		// 	///wechat/index?token=035c94156320d656250e32aef241febf
-		// 	Api.post(`/wechat/login?token=${token}`).then((res: any) => {
-		// 		if (_.get(res, 'data.code') === 0) {
-		// 			const data = _.get(res, 'data.data.info')
-		// 			setUserInfo(data || {})
-		// 			getActivityInfo(1);
-		// 		}
-		// 	}).catch((error: any) => {
-		// 		Toast.fail('获取信息失败')
-		// 		console.log("error===", error)
-		// 	})
-		// }
 	}, [])
 
 	const renderMine = () => {
@@ -72,7 +61,7 @@ const homePage = () => {
 					<span>{_.get(userInfo, 'nickname')}</span>
 				</div>
 				<div className={styles.cardBox}>
-					<div className={styles.cardTitle}>
+					<div onClick={() => { history.push("withdrawal") }} className={styles.cardTitle}>
 						我的返利<span>立即提现</span>
 					</div>
 					<div className={styles.cardContent}>
@@ -82,11 +71,11 @@ const homePage = () => {
 						</div>
 						<div className={styles.cardItem}>
 							<span>即将到账(元)</span>
-							<span>{_.get(userInfo, 'cash_amount') || '-'}</span>
+							<span>{_.get(userInfo, 'withdrawal_amount') || '-'}</span>
 						</div>
 						<div className={styles.cardItem}>
 							<span>累计到账(元)</span>
-							<span>{_.get(userInfo, 'commission_rate') || '-'}</span>
+							<span>{_.get(userInfo, 'cash_amount') || '-'}</span>
 						</div>
 					</div>
 				</div>
@@ -134,6 +123,7 @@ const homePage = () => {
 					if (_.get(res, 'data.code') === 0) {
 						const data = _.get(res, 'data.data.user_info');
 						setUserInfo(data || {});
+						setStorage("userInfo", JSON.stringify(data));
 					}
 				})
 				.finally(() => {
@@ -184,7 +174,7 @@ const homePage = () => {
 					selectedIcon={renderIcon(styles.eleSelected)}
 					selected={selectedTab === TAB_CONFIG.ELE_M}
 					onPress={() => {
-						setSelectTab(TAB_CONFIG.ELE_M);
+						onChangeTab(TAB_CONFIG.ELE_M);
 						_.isEmpty(eleInfo) && getActivityInfo(TAB_CONFIG.ELE_M);
 					}}
 					data-seed="logId"
@@ -213,7 +203,7 @@ const homePage = () => {
 								</div>
 							</div>
 							<div className={styles.splitBox}>
-								................................................................................................
+								.....................................................................................................................
               </div>
 							<div className={styles.qrcodeBox}>
 								{!_.isEmpty(eleInfo) && (
@@ -262,7 +252,7 @@ const homePage = () => {
 					key={TAB_CONFIG.MEI_TUAN}
 					selected={selectedTab === TAB_CONFIG.MEI_TUAN}
 					onPress={() => {
-						setSelectTab(TAB_CONFIG.MEI_TUAN);
+						onChangeTab(TAB_CONFIG.MEI_TUAN);
 						_.isEmpty(mtInfo) && getActivityInfo(TAB_CONFIG.MEI_TUAN);
 					}}
 					data-seed="logId1"
@@ -285,7 +275,7 @@ const homePage = () => {
 								</div>
 							</div>
 							<div className={styles.splitBox}>
-								................................................................................................
+								.......................................................................................................................
               </div>
 							<div className={styles.qrcodeBox}>
 								{!_.isEmpty(mtInfo) && (
@@ -335,7 +325,7 @@ const homePage = () => {
 					dot={true}
 					selected={selectedTab === TAB_CONFIG.MINE}
 					onPress={() => {
-						setSelectTab(TAB_CONFIG.MINE);
+						onChangeTab(TAB_CONFIG.MINE);
 						getActivityInfo(TAB_CONFIG.MINE);
 					}}
 				>

@@ -7,6 +7,8 @@ import homePage from './pages/homePage/homePage';
 import orderDetailPage from './pages/OrderDetailPage/OrderDetail'
 import orderPage from './pages/OrderPage/orderPage'
 import history from './utils/history-helper';
+import { withdrawalPage } from './pages/WithdrawalPage/withdrawalPage';
+import { WithdrawalHistoryPage } from './pages/WithdrawalHistoryPage/WithdrawalHistoryPage';
 
 export interface RouteType {
   routerPath: string;
@@ -35,6 +37,21 @@ const routes: RouteType[] = [
     routerPath: 'orderDetail',
     pageTitle: '订单详情',
     component: orderDetailPage
+  },
+  {
+    routerPath: "withdrawal",
+    pageTitle: "提现",
+    component: withdrawalPage
+  },
+  {
+    routerPath: "withdrawalHistroy",
+    pageTitle: "提现记录",
+    component: WithdrawalHistoryPage
+  },
+  {
+    routerPath: "changeAccount",
+    pageTitle: "提现信息",
+    component: WithdrawalHistoryPage
   },
   {
     routerPath: 'example/:exampleId?',

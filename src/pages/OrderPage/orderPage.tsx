@@ -1,12 +1,12 @@
 import { ActivityIndicator, Tabs, Toast } from 'antd-mobile';
 import classnames from 'classnames';
 import _ from 'lodash';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import emptyImg from '../../assets/images/empty.png';
 import Api from '../../lib/api';
 // import history from '../../utils/history-helper';
 import styles from './style.module.css';
+import { formatTime } from '../../utils/formatHelper';
 
 const tabs = [
     { title: '全部', key: '0' },
@@ -19,6 +19,7 @@ const OrderPage = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        document.title = '订单中心';
         getOrder(0);
     }, []);
 
@@ -38,7 +39,7 @@ const OrderPage = () => {
             });
     };
     // 订单状态：1即将到账，2订单失效，100系统结算
-    const getOrderStatus = (status: any) => {
+    const getOrderStatus = (status: any, time?: boolean) => {
         status = _.toString(status);
         switch (status) {
             case '1':
@@ -46,18 +47,11 @@ const OrderPage = () => {
             case '2':
                 return '订单失效';
             case '100':
-                return '系统结算';
+                return time ? "到账时间" : '已到账';
             default:
                 return ' ';
         }
     };
-
-    const formatTime = (time: any) => {
-        return moment(new Date(time * 1000)).format(
-            'yyyy-MM-DD hh:mm:ss'
-        )
-        // return new Date(time * 1000).Format('yyyy-MM-dd hh:mm:ss')
-    }
 
     const renderItems = () => {
         return _.map(orderData, (item) => {
@@ -93,10 +87,12 @@ const OrderPage = () => {
                         <div className={styles.left}>
                             <span>{getOrderStatus(_.get(item, 'status'))}：</span>
                             <span className={styles.money}>{_.get(item, 'use_earn')}</span>
-                            <div>
-                                {getOrderStatus(_.get(item, 'status'))}：
+                            {_.get(item, 'status') !== 1 && <div>
+                                {getOrderStatus(_.get(item, 'status'), true)}：
                                 {formatTime(_.get(item, 'update_time'))}
+
                             </div>
+                            }
                         </div>
                         <div
                             className={styles.orderDetail}
