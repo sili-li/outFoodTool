@@ -5,6 +5,7 @@ import Api from '../../lib/api';
 import _ from "lodash"
 import { Toast, ActivityIndicator } from 'antd-mobile';
 import { formatToDate } from '../../utils/formatHelper';
+import emptyImg from '../../assets/images/empty.png';
 
 export const WithdrawalHistoryPage = () => {
     const [loading, setLoading] = useState(false);
@@ -34,18 +35,30 @@ export const WithdrawalHistoryPage = () => {
     const STATUS = {
         1: "已到账",
         2: "待审核",
-        3: "取消"
+        3: "取消返还"
+    }
+
+    const renderContent = () => {
+        if (!loading && _.isEmpty(historyData)) {
+            return (
+                <div className={styles.empty}>
+                    <img src={emptyImg} />
+                    <p>暂无数据</p>
+                </div>
+            );
+        } else {
+            return _.map(historyData, item => {
+                return <div className={styles.itemList} key={item.create_time}>
+                    <span>{_.get(STATUS, item.status) || "-"}</span>
+                    <span>{item.amount}元</span>
+                    <span className={styles.time}>{formatToDate(item.create_time)}</span>
+                </div>
+            })
+        }
     }
 
     return <div className={styles.historyPage}>
-        {_.map(historyData, item => {
-            return <div className={styles.itemList} key={item.create_time}>
-                <span>{_.get(STATUS, item.status) || "-"}</span>
-                <span>{item.amount}元</span>
-                <span className={styles.time}>{formatToDate(item.create_time)}</span>
-            </div>
-        })}
-        <ActivityIndicator animating={loading} text="正在提现中..." />
-
+        {renderContent()}
+        <ActivityIndicator toast animating={loading} text="正在提现中..." />
     </div>
 }

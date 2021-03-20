@@ -9,6 +9,7 @@ import orderPage from './pages/OrderPage/orderPage'
 import history from './utils/history-helper';
 import { withdrawalPage } from './pages/WithdrawalPage/withdrawalPage';
 import { WithdrawalHistoryPage } from './pages/WithdrawalHistoryPage/WithdrawalHistoryPage';
+import { AccoutInfoPage } from './pages/AccountInfoPage/AccountInfoPage';
 
 export interface RouteType {
   routerPath: string;
@@ -49,9 +50,9 @@ const routes: RouteType[] = [
     component: WithdrawalHistoryPage
   },
   {
-    routerPath: "changeAccount",
+    routerPath: "accountInfo",
     pageTitle: "提现信息",
-    component: WithdrawalHistoryPage
+    component: AccoutInfoPage
   },
   {
     routerPath: 'example/:exampleId?',

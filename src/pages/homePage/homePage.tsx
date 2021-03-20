@@ -25,6 +25,9 @@ const homePage = () => {
 	const [token, setToken] = useState("13f7a5a0221f4a984ad30eeda54b3f07");
 	const [loading, setIsLoading] = useState(false);
 
+	useEffect(() => {
+		document.title = '外卖联盟';
+	})
 	// const state = _.get(queryParams, 'state');
 	// const pid = _.get(queryParams, 'pid') || "";
 	const onChangeTab = (tab: string) => {
@@ -32,7 +35,7 @@ const homePage = () => {
 		setStorage("tab", tab);
 	}
 	//待删
-	localStorage.setItem('token', '13f7a5a0221f4a984ad30eeda54b3f07')
+	// localStorage.setItem('token', '13f7a5a0221f4a984ad30eeda54b3f07')
 	useEffect(() => {
 		const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
 		const code = _.get(queryParams, 'code') || "";
@@ -41,7 +44,7 @@ const homePage = () => {
 		Api.get(`/wechat/login?code=${code}`).then((res: any) => {
 			// 未授权
 			if (_.get(res, 'data.code') === 1000) {
-				// window.location.href = _.get(res, 'data.data.oauth_url')
+				window.location.href = _.get(res, 'data.data.oauth_url')
 			} else if (_.get(res, 'data.code') === 0) {
 				setToken(_.get(res, 'data.data.token'));
 				setStorage('token', _.get(res, 'data.data.token'))

@@ -79,7 +79,7 @@ export const withdrawalPage = () => {
                     <span>支付宝账号：</span>
                     <span className={styles.account}>{ali_account || "未绑定"}</span>
                 </div>
-                <span className={styles.accountBtn}>{ali_account ? "更改" : "绑定账号"}</span>
+                <span onClick={() => history.push("accountInfo")} className={styles.accountBtn}>{ali_account ? "更改" : "绑定账号"}</span>
             </div>
         </div>
         <div className={classnames(styles.cardContainer, styles.tagContent)}>
@@ -89,6 +89,6 @@ export const withdrawalPage = () => {
         <div className={styles.fixedBox}>
             <Button onClick={_.debounce(onSubmit, 200)} disabled={withdrawal_amount < 1} className={styles.withdrawalBtn}>提现</Button>
         </div>
-        <ActivityIndicator animating={isSubmitting} text="正在提现中..." />
+        <ActivityIndicator toast animating={isSubmitting} text="正在提现中..." />
     </div>
 }

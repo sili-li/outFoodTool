@@ -56,7 +56,18 @@
             padding-bottom: 6px;
             border-radius: 6px;
             &.selected{
-                border-color: #f40;
+                border-color: #fdae3b;
+                position: relative;
+                &::after{
+                    content:"";
+                    background: url(../../assets/icons/select.png) no-repeat;
+                    position: absolute;
+                    width: 30px;
+                    height: 30px;
+                    background-size: contain;
+                    bottom: -1px;
+                    right:-1px;
+                }
             }
             & span{
                 font-size: 16px;
@@ -71,6 +82,7 @@
     justify-content: space-between;
     & .account{
         color: #f40;
+        font-size: 14px;
     }
     & .accountBtn{
         width: 70px;
@@ -97,13 +109,24 @@
               display: flex;
               align-items: center;
               justify-content: center;
-              font-size: 14px;
+              font-size: 16px;
               color: #333;
               border-radius: 4px;
-              border: 1px solid #666;
+              border: 1px solid #d8d7d7;
               &.selected{
-                  color: #f40;
-                  border: 1px solid #f40;
+                color: #fdae3b;
+                  border: 1px solid #fdae3b;
+                  position: relative;
+                  &::after{
+                      content:"";
+                      background: url(../../assets/icons/select.png) no-repeat;
+                      position: absolute;
+                      width: 30px;
+                      height: 30px;
+                      background-size: contain;
+                      bottom: -1px;
+                      right:-1px;
+                  }
               }
           }
           
