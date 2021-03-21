@@ -32,7 +32,6 @@ export const AccoutInfoPage = () => {
             phone: phone
         })
             .then(({ data }) => {
-                console.log('===data', data);
                 if (data.code === 0) {
                     Toast.success("修改成功")
                 } else {

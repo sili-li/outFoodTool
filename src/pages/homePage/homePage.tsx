@@ -10,7 +10,7 @@ import qs from 'qs'
 import styles from './homePage.module.css'
 import Api from '../../lib/api';
 import history from '../../utils/history-helper';
-import { setStorage } from '../../utils/localStorageHelper';
+import { setStorage, getStorageByKey } from '../../utils/localStorageHelper';
 const TAB_CONFIG = {
 	MEI_TUAN: 'mt',
 	ELE_M: "elm",
@@ -33,13 +33,14 @@ const homePage = () => {
 	const onChangeTab = (tab: string) => {
 		setSelectTab(tab)
 		setStorage("tab", tab);
+		getActivityInfo(tab)
 	}
 	//待删
 	// localStorage.setItem('token', '13f7a5a0221f4a984ad30eeda54b3f07')
 	useEffect(() => {
 		const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
 		const code = _.get(queryParams, 'code') || "";
-		const tab = _.get(queryParams, 'tab') || localStorage.getItem('tab');
+		const tab = _.get(queryParams, 'tab') || getStorageByKey('tab');
 		onChangeTab(tab || TAB_CONFIG.MEI_TUAN);
 		Api.get(`/wechat/login?code=${code}`).then((res: any) => {
 			// 未授权
@@ -48,7 +49,6 @@ const homePage = () => {
 			} else if (_.get(res, 'data.code') === 0) {
 				setToken(_.get(res, 'data.data.token'));
 				setStorage('token', _.get(res, 'data.data.token'))
-				getActivityInfo(tab);
 			}
 		}).catch((error: any) => {
 			Toast.fail('登录失败')
