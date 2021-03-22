@@ -1,5 +1,4 @@
 import { ActivityIndicator, TabBar, Toast } from 'antd-mobile';
-// import qs from 'qs'
 import classnames from 'classnames';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -22,7 +21,7 @@ const homePage = () => {
 	const [userInfo, setUserInfo] = useState();
 	const [eleInfo, setEleInfo] = useState();
 	const [mtInfo, setMtInfo] = useState();
-	const [token, setToken] = useState("13f7a5a0221f4a984ad30eeda54b3f07");
+	const [token, setToken] = useState();
 	const [loading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -33,7 +32,9 @@ const homePage = () => {
 	const onChangeTab = (tab: string) => {
 		setSelectTab(tab)
 		setStorage("tab", tab);
-		getActivityInfo(tab)
+		if (!_.isEmpty(token)) {
+			getActivityInfo(tab)
+		}
 	}
 	//待删
 	// localStorage.setItem('token', '13f7a5a0221f4a984ad30eeda54b3f07')
@@ -41,14 +42,17 @@ const homePage = () => {
 		const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
 		const code = _.get(queryParams, 'code') || "";
 		const tab = _.get(queryParams, 'tab') || getStorageByKey('tab');
-		onChangeTab(tab || TAB_CONFIG.MEI_TUAN);
+		//待删
+		onChangeTab(tab)
 		Api.get(`/wechat/login?code=${code}`).then((res: any) => {
 			// 未授权
 			if (_.get(res, 'data.code') === 1000) {
 				window.location.href = _.get(res, 'data.data.oauth_url')
 			} else if (_.get(res, 'data.code') === 0) {
 				setToken(_.get(res, 'data.data.token'));
-				setStorage('token', _.get(res, 'data.data.token'))
+				setStorage('token', _.get(res, 'data.data.token'));
+				onChangeTab(tab || TAB_CONFIG.MEI_TUAN);
+
 			}
 		}).catch((error: any) => {
 			Toast.fail('登录失败')

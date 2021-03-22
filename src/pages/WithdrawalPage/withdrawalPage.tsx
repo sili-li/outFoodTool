@@ -31,7 +31,7 @@ export const withdrawalPage = () => {
     useEffect(() => {
         document.title = '提现';
         getUserInfo();
-    })
+    }, [])
 
     const getUserInfo = () => {
         Api.post('/wechat/get-user-info', {})

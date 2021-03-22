@@ -7,6 +7,7 @@ import Api from '../../lib/api';
 // import history from '../../utils/history-helper';
 import styles from './style.module.css';
 import { formatTime } from '../../utils/formatHelper';
+import history from '../../utils/history-helper';
 
 const tabs = [
     { title: '全部', key: '0' },
@@ -56,7 +57,7 @@ const OrderPage = () => {
     const renderItems = () => {
         return _.map(orderData, (item) => {
             return (
-                <div className={styles.itemContianer} key={_.get(item, 'id')}>
+                <div onClick={() => history.push(`orderDetail?id=${_.get(item, 'id')}`)} className={styles.itemContianer} key={_.get(item, 'id')}>
                     <div className={styles.itemCard}>
                         <div
                             className={classnames(
