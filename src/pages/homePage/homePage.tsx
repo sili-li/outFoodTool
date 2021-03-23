@@ -29,10 +29,10 @@ const homePage = () => {
 	})
 	// const state = _.get(queryParams, 'state');
 	// const pid = _.get(queryParams, 'pid') || "";
-	const onChangeTab = (tab: string) => {
+	const onChangeTab = (tab: string, loginToken?: string) => {
 		setSelectTab(tab)
 		setStorage("tab", tab);
-		if (!_.isEmpty(token)) {
+		if (!_.isEmpty(token) || !_.isEmpty(loginToken)) {
 			getActivityInfo(tab)
 		}
 	}
@@ -49,9 +49,10 @@ const homePage = () => {
 			if (_.get(res, 'data.code') === 1000) {
 				window.location.href = _.get(res, 'data.data.oauth_url')
 			} else if (_.get(res, 'data.code') === 0) {
+
 				setToken(_.get(res, 'data.data.token'));
 				setStorage('token', _.get(res, 'data.data.token'));
-				onChangeTab(tab || TAB_CONFIG.MEI_TUAN);
+				onChangeTab(tab || TAB_CONFIG.MEI_TUAN, _.get(res, 'data.data.token'));
 
 			}
 		}).catch((error: any) => {
@@ -182,7 +183,6 @@ const homePage = () => {
 					selected={selectedTab === TAB_CONFIG.ELE_M}
 					onPress={() => {
 						onChangeTab(TAB_CONFIG.ELE_M);
-						_.isEmpty(eleInfo) && getActivityInfo(TAB_CONFIG.ELE_M);
 					}}
 					data-seed="logId"
 				>
@@ -260,7 +260,7 @@ const homePage = () => {
 					selected={selectedTab === TAB_CONFIG.MEI_TUAN}
 					onPress={() => {
 						onChangeTab(TAB_CONFIG.MEI_TUAN);
-						_.isEmpty(mtInfo) && getActivityInfo(TAB_CONFIG.MEI_TUAN);
+						// _.isEmpty(mtInfo) && getActivityInfo(TAB_CONFIG.MEI_TUAN);
 					}}
 					data-seed="logId1"
 				>
@@ -333,7 +333,7 @@ const homePage = () => {
 					selected={selectedTab === TAB_CONFIG.MINE}
 					onPress={() => {
 						onChangeTab(TAB_CONFIG.MINE);
-						getActivityInfo(TAB_CONFIG.MINE);
+						// getActivityInfo(TAB_CONFIG.MINE);
 					}}
 				>
 					{renderMine()}

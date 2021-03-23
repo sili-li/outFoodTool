@@ -12,7 +12,7 @@ import history from '../../utils/history-helper';
 const tabs = [
     { title: '全部', key: '0' },
     { title: '即将到账', key: '1' },
-    { title: '已到账', key: '3' },
+    { title: '已到账', key: '100' },
     { title: '失效订单', key: '2' },
 ];
 const OrderPage = () => {
@@ -88,7 +88,7 @@ const OrderPage = () => {
                         <div className={styles.left}>
                             <span>{getOrderStatus(_.get(item, 'status'))}：</span>
                             <span className={styles.money}>{_.get(item, 'use_earn')}</span>
-                            {_.get(item, 'status') !== 1 && <div>
+                            {_.get(item, 'status') === 100 && <div>
                                 {getOrderStatus(_.get(item, 'status'), true)}：
                                 {formatTime(_.get(item, 'update_time'))}
 
@@ -133,7 +133,7 @@ const OrderPage = () => {
             >
                 <div key="0">{renderTabs()}</div>
                 <div key="1">{renderTabs()}</div>
-                <div key="3">{renderTabs()}</div>
+                <div key="100">{renderTabs()}</div>
                 <div key="2">{renderTabs()}</div>
             </Tabs>
             <ActivityIndicator toast={true} text="加载中..." animating={loading} />

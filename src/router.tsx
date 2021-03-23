@@ -1,7 +1,7 @@
 import React from 'react';
 // @ts-ignore
 import CacheRoute, { CacheSwitch } from 'react-router-cache-route';
-import { Redirect, Route, Router } from 'react-router-dom';
+import { Route, Router } from 'react-router-dom';
 import { LoadableExamplePage } from './pages/Example/Loadable';
 import homePage from './pages/homePage/homePage';
 import orderDetailPage from './pages/OrderDetailPage/OrderDetail'
@@ -78,7 +78,7 @@ function AppRouter() {
               />
             );
         })}
-        <Redirect to="/" />
+        {/* <Redirect to="/" /> */}
       </CacheSwitch>
     </Router>
   );

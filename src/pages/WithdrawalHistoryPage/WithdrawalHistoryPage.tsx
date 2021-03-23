@@ -6,6 +6,7 @@ import _ from "lodash"
 import { Toast, ActivityIndicator } from 'antd-mobile';
 import { formatToDate } from '../../utils/formatHelper';
 import emptyImg from '../../assets/images/empty.png';
+import classnames from 'classnames'
 
 export const WithdrawalHistoryPage = () => {
     const [loading, setLoading] = useState(false);
@@ -49,9 +50,17 @@ export const WithdrawalHistoryPage = () => {
         } else {
             return _.map(historyData, item => {
                 return <div className={styles.itemList} key={item.create_time}>
-                    <span>{_.get(STATUS, item.status) || "-"}</span>
-                    <span>{item.amount}元</span>
-                    <span className={styles.time}>{formatToDate(item.create_time)}</span>
+                    <div >
+                        <span className={classnames(
+                            item.status === 3 && styles.color3,
+                            item.status === 1 && styles.color1,
+                            item.status === 2 && styles.color2)}>
+                            {_.get(STATUS, item.status) || "-"}<br />
+                        </span>
+                        <span>{item.amount}元</span>
+                        <span className={styles.time}>{formatToDate(item.create_time)}</span>
+                    </div>
+                    {item.status === 3 && <span className={styles.msg}>{item.msg}</span>}
                 </div>
             })
         }

@@ -4,12 +4,29 @@
         font-size: 14px;
         background-color: #fff;
         padding: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        
         border-bottom: 1px solid #e4e4e4;
+        &>div{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        & .color2{
+            color: #909399
+        }
+        & .color1{
+            color:  #67c23a
+        }
+        & .color3{
+            color: #f56c6c
+        }
         & .time{
             color: #999;
+        }
+        & .msg{
+            color: #f56c6c;
+            display: block;
+            margin-top: 8px;
         }
     }
     & .empty{
