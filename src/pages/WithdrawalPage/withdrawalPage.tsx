@@ -50,6 +50,10 @@ export const withdrawalPage = () => {
             Toast.fail("请选择提现金额");
             return;
         }
+        if (_.isEmpty(_.get(userInfo, 'ali_account'))) {
+            Toast.fail("请绑定账号");
+            return;
+        }
         setIsSubmitting(true);
         Api.post("/wechat/withdraw-balance", { amount: seletedTag, type: 2 })
             .then(({ data }) => {
@@ -69,7 +73,7 @@ export const withdrawalPage = () => {
             })
     }
 
-    const userBalance = () => _.toNumber(_.get(userInfo, 'balance'))
+    const userBalance = () => _.toNumber(_.get(userInfo, 'balance', 0))
 
     const onClickTag = (tag: number) => () => {
         setSelectedTag(tag)

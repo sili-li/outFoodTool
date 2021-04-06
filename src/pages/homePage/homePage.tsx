@@ -37,7 +37,7 @@ const homePage = () => {
 		}
 	}
 	//待删
-	// localStorage.setItem('token', '13f7a5a0221f4a984ad30eeda54b3f07')
+	//localStorage.setItem('token', '13f7a5a0221f4a984ad30eeda54b3f07')
 	useEffect(() => {
 		const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
 		const code = _.get(queryParams, 'code') || "";
@@ -228,7 +228,15 @@ const homePage = () => {
               </a>
 						</div>
 						<div className={styles.btnBox}>
-							<a href={_.get(eleInfo, 'short_url')}>分享赚钱</a>
+							<CopyToClipboard
+								text={`饿了么官方发大招了✌️ \n新出一个加餐红包😘\n多一份选择多省点钱🌹\n说不定运气好还可以白嫖🐮\n${_.get(
+									eleInfo,
+									'short_url'
+								)}`}
+								onCopy={() => Toast.info('复制成功')}
+							>
+								<a>分享赚钱</a>
+							</CopyToClipboard>
 							<CopyToClipboard
 								text={`饿了么官方发大招了✌️ \n新出一个加餐红包😘\n多一份选择多省点钱🌹\n说不定运气好还可以白嫖🐮\n${_.get(
 									eleInfo,
@@ -300,7 +308,15 @@ const homePage = () => {
               </a>
 						</div>
 						<div className={styles.btnBox}>
-							<a href={_.get(mtInfo, 'short_url')}>分享赚钱</a>
+							<CopyToClipboard
+								text={`【美团外卖福利红包】每日限时抢，最高可得66元！\n${_.get(
+									mtInfo,
+									'short_url'
+								)}`}
+								onCopy={() => Toast.info('复制成功')}
+							>
+								<a href={_.get(mtInfo, 'short_url')}>分享赚钱</a>
+							</CopyToClipboard>
 							<CopyToClipboard
 								text={`【美团外卖福利红包】每日限时抢，最高可得66元！\n${_.get(
 									mtInfo,
