@@ -50,6 +50,10 @@ export const withdrawalPage = () => {
             Toast.fail("请选择提现金额");
             return;
         }
+        if (_.toNumber(seletedTag) > userBalance()) {
+            Toast.fail("选择的提现金额大于可提现金额");
+            return;
+        }
         if (_.isEmpty(_.get(userInfo, 'ali_account'))) {
             Toast.fail("请绑定账号");
             return;
